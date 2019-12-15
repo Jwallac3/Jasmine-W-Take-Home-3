@@ -1,0 +1,134 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```#Jasmine Wallace Exam 3 --
+# Due Decemebr 15, 2019 ---- 
+# clear console, global environment--
+rm(list= ls())
+cat("\014")
+
+date()
+sessionInfo()
+
+
+
+install.packages("tidyverse")
+library(ggplot2)
+library(Hmisc)
+library (tidyverse)
+library(dplyr)
+install.packages("incidence")
+library(incidence)
+
+
+setwd 
+nola <- read.csv('/Users/jbnw/Downloads/RSTUDIO/nola_crime_2018.csv', header = 1)
+
+# Q1 9970
+#Q2 24
+
+
+newnola <- nola %>% distinct(Item_Number, .keep_all = TRUE)
+describe(newnola)
+
+#Q3 9384
+
+nola4 <- subset(newnola, GNOCDC_LAB == "Irish Channel")
+
+#Q4. 1
+
+describe(newnola)
+count(newnola, "GNOCDC_LAB")
+table(newnola$GNOCDC_LAB)
+
+#Q5 French Quater & Little woods
+
+nola4 <- newnola%>% distinct(GNOCDC_LAB, .keep_all = TRUE)
+describe(nola4)
+
+aggregate(nola4$pop, by = list(nola4$GNOCDC_LAB), max)
+
+#Q7 Little Woods - 44,947
+
+table(newnola$Signal_Description)
+table(newnola$Charge_Description)
+
+#Q11 Domestic Disturbance & Theft
+
+
+newcount <- newnola %>% group_by(GNOCDC_LAB, sort=TRUE) %>%
+  add_count(Signal_Description, sort = TRUE)
+
+#creating dataset with counts of crime
+count <- newnola %>% add_count(GNOCDC_LAB, sort = TRUE)
+final <- count %>% distinct(GNOCDC_LAB, .keep_all = TRUE)
+
+#Q6
+final <- transform(final, inc = (n / pop)*1000 )
+
+describe(final$GNOCDC_LAB)
+
+#Q8 Lakewood & 10
+
+#Q9
+final <- transform(final, rr1 = inc / .07148474)
+
+#not used yet
+set12 <- count %>% distinct(Signal_Description, .keep_all = TRUE)
+
+#Q14 Little Woods
+
+data("iris")
+summary(iris)
+
+data(mtcars)
+plot(mtcars$mpg, mtcars$disp, main = "Scatterplot for MPG VS Displacement", 
+     xlab = "Miles per Gallon", ylab = "Displacement")
+abline(lm(disp ~ mpg , data=mtcars), col= "red")
+
+
+
+plot(final$inc, final$Victim_Age, main="Question 13")
+abline(lm(inc ~ Victim_Age, data = final), col="red")
+
+#Q17
+install.packages("car")
+library(car)
+
+
+scatterplot(disp ~ mpg | cyl, data=mtcars, xlab = "Miles per Gallon",
+            ylab= "Displacement", main = "Scatterplot for MPG vs Displacement over
+            cylinders")
+
+dat1 <- c(-4.89, -1.93,-1.11,3.94,.046,-3.85,-.20,6.04
+          ,9.36,7.26,4.88,13.45,-2.93,6.39,-16.22,-3.23,
+          6.86,11.87,1.81,-2.45)
+
+describe(dat1)
+summary(dat1)
+
+sd(dat1, na.rm = TRUE)
+
+# Q18
+dat1 <- transform(dat1, zscore = (dat1 - 1.755)/6.880024)
+
+#Q15
+hist.default(dpois(x=0:10000, lambda = 4.7))
+
+install.packages("rmarkdown")
+library(knitr)
+knit(input = '/Users/jbnw/Downloads/RSTUDIO/JASMINEWALLACE_Exam3.r')
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
